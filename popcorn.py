@@ -26,7 +26,7 @@ def checkDB():
     return parsedData
 
 def createSQL():
-    table_name = 'movies'  # name of the table to be created
+    table_name = 'movies'
     conn = sqlite3.connect(sqlite_file)
     c = conn.cursor()
     c.execute('''
@@ -56,28 +56,27 @@ def compareDB(newData):
             url = newData[_id]["u1080"]
         else:
             url = newData[_id]["u720"]
-
         data = (_id, title, year, url)
         try:
             sql = '''INSERT INTO movies(id, title, year, url)
                           VALUES(?,?,?,?)'''
             c.execute(sql,data)
             conn.commit()
-            print("Added {} to DB".format(data))
+            print("Added {} to DB".format(title))
             addTorrent(title, year, url)
         except sqlite3.IntegrityError:
-            print('ERROR: ID {} already exists in PRIMARY KEY column.'.format(_id))
+            print('ERROR: {1} ({0}) already exists in database.'.format(_id, title))
     conn.close
 
 
-#CreateDB if it does not exist.
+
 if not os.path.isfile('./movie_tracker.sqlite'):
     createSQL()
-
-
+    
 while(True):
     newData = checkDB()
     compareDB(newData)
+    print("\n\nUpdated... Sleeping for 12 Hours\n\n")
     sleep(43200)
     
 
