@@ -9,7 +9,6 @@ def checkDB():
     data = requests.get('https://movies-v2.api-fetch.website/movies/1?sort=trending%15')
     rawdata = data.json()
     parsedData = {}
-
     for movie in rawdata:
         id = movie["imdb_id"]
         title = movie["title"]
@@ -32,11 +31,8 @@ def createSQL():
     c.execute('''
     CREATE TABLE movies(id TEXT PRIMARY KEY, title TEXT, year TEXT, url TEXT)
     ''')
-
     conn.commit()
     conn.close
-
-
 
 def addTorrent(title, year, url):
     uri = "http://localhost:8080/command/download"
@@ -44,7 +40,6 @@ def addTorrent(title, year, url):
     data = {'urls': url, 'category': 'movie', 'rename': rename}
     r = requests.post(uri, data)
     
-
 def compareDB(newData):
     conn = sqlite3.connect(sqlite_file)
     c = conn.cursor()
@@ -67,8 +62,6 @@ def compareDB(newData):
         except sqlite3.IntegrityError:
             print('ERROR: {1} ({0}) already exists in database.'.format(_id, title))
     conn.close
-
-
 
 if not os.path.isfile('./movie_tracker.sqlite'):
     createSQL()
